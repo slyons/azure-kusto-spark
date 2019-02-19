@@ -6,29 +6,30 @@ import java.util.Locale
 import com.microsoft.azure.kusto.data.{ClientFactory, ConnectionStringBuilder}
 import com.microsoft.kusto.spark.utils.KustoQueryUtils
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.sources.{BaseRelation, TableScan}
+import org.apache.spark.sql.sources.{BaseRelation, Filter, PrunedFilteredScan, TableScan}
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 
-case class KustoRelation(cluster: String,
-                         database: String,
-                         appId: String,
-                         appKey: String,
-                         authorityId: String,
-                         query: String,
-                         isLeanMode: Boolean,
-                         numPartitions: Int,
-                         partitioningColumn: Option[String],
-                         partitioningMode: Option[String],
-                         customSchema: Option[String] = None,
-                         storageAccount: Option[String] = None,
-                         storageContainer: Option[String] = None,
-                         storageAccountSecrete: Option[String] = None,
-                         isStorageSecreteKeyNotSas: Boolean = true)
-                        (@transient val sparkSession: SparkSession) extends BaseRelation with TableScan with Serializable {
+private[kusto] case class KustoRelation(
+    cluster: String,
+    database: String,
+    appId: String,
+    appKey: String,
+    authorityId: String,
+    query: String,
+    isLeanMode: Boolean,
+    numPartitions: Int,
+    partitioningColumn: Option[String],
+    partitioningMode: Option[String],
+    customSchema: Option[String] = None,
+    storageAccount: Option[String] = None,
+    storageContainer: Option[String] = None,
+    storageAccountSecrete: Option[String] = None,
+    isStorageSecreteKeyNotSas: Boolean = true)
+    (@transient val sparkSession: SparkSession)
+  extends BaseRelation with TableScan with PrunedFilteredScan with Serializable {
 
   private val normalizedQuery = KustoQueryUtils.normalizeQuery(query)
-
   override def sqlContext: SQLContext = sparkSession.sqlContext
 
   override def schema: StructType = {
@@ -51,6 +52,21 @@ case class KustoRelation(cluster: String,
       )
     }
   }
+
+  override def buildScan(requiredColumns: Array[String], filters: Array[Filter]): RDD[Row] =
+    if (isLeanMode) {
+      KustoReader.leanBuildScan(
+        KustoReadRequest(sparkSession, schema, cluster, database, query, appId, appKey, authorityId),
+        Some(requiredColumns), Some(filters)
+      )
+    } else {
+      KustoReader.scaleBuildScan(
+        KustoReadRequest(sparkSession, schema, cluster, database, query, appId, appKey, authorityId),
+        getTransientStorageParameters(storageAccount, storageContainer, storageAccountSecrete, isStorageSecreteKeyNotSas),
+        KustoPartitionInfo(numPartitions, getPartitioningColumn(partitioningColumn, isLeanMode), getPartitioningMode(partitioningMode)),
+        Some(requiredColumns), Some(filters)
+      )
+    }
 
   private def getTransientStorageParameters(storageAccount: Option[String],
                                             storageContainer: Option[String],

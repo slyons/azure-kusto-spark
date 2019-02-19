@@ -6,10 +6,9 @@ import com.microsoft.azure.kusto.data.Client
 import com.microsoft.kusto.spark.utils.{CslCommandsGenerator, KustoClient, KustoQueryUtils, KustoDataSourceUtils => KDSU}
 import org.apache.spark.Partition
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.sources.Filter
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
-
-import scala.concurrent.duration._
+import org.apache.spark.sql.{Row, SparkSession}
 
 private[kusto] case class KustoPartition(predicate: Option[String], idx: Int) extends Partition {
   override def index: Int = idx
@@ -34,7 +33,10 @@ private[kusto] case class KustoReadRequest(sparkSession: SparkSession,
 private[kusto] object KustoReader {
   private val myName = this.getClass.getSimpleName
 
-  private[kusto] def leanBuildScan(request: KustoReadRequest): RDD[Row] = {
+  private[kusto] def leanBuildScan(
+    request: KustoReadRequest,
+    requiredColumns: Option[Array[String]] = None,
+    filters: Option[Array[Filter]] = None): RDD[Row] = {
     val kustoClient = KustoClient.getAdmin(request.cluster, request.appId, request.appKey, request.authorityId)
 
     val kustoResult = kustoClient.execute(request.database, request.query)
@@ -42,7 +44,12 @@ private[kusto] object KustoReader {
     request.sparkSession.createDataFrame(serializer.toRows, serializer.getSchema).rdd
   }
 
-  private[kusto] def scaleBuildScan(request: KustoReadRequest, storage: KustoStorageParameters, partitionInfo: KustoPartitionInfo): RDD[Row] = {
+  private[kusto] def scaleBuildScan(
+    request: KustoReadRequest,
+    storage: KustoStorageParameters,
+    partitionInfo: KustoPartitionInfo,
+    requiredColumns: Option[Array[String]] = None,
+    filters: Option[Array[Filter]] = None): RDD[Row] = {
     setupBlobAccess(request, storage)
     val partitions = calculatePartitions(partitionInfo)
     val reader = new KustoReader(request, storage)
