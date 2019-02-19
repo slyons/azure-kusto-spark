@@ -8,8 +8,6 @@ import org.apache.spark.sql.catalyst.util.DateTimeUtils
 import org.apache.spark.sql.sources.{BaseRelation, CreatableRelationProvider, DataSourceRegister, RelationProvider}
 import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}
 
-import scala.concurrent.duration._
-
 class DefaultSource extends CreatableRelationProvider
   with RelationProvider with DataSourceRegister {
 

@@ -35,8 +35,8 @@ private[kusto] object KustoReader {
 
   private[kusto] def leanBuildScan(
     request: KustoReadRequest,
-    requiredColumns: Option[Array[String]] = None,
-    filters: Option[Array[Filter]] = None): RDD[Row] = {
+    requiredColumns: Array[String] = Array.empty,
+    filters: Array[Filter] = Array.empty): RDD[Row] = {
     val kustoClient = KustoClient.getAdmin(request.cluster, request.appId, request.appKey, request.authorityId)
 
     val kustoResult = kustoClient.execute(request.database, request.query)
@@ -48,8 +48,8 @@ private[kusto] object KustoReader {
     request: KustoReadRequest,
     storage: KustoStorageParameters,
     partitionInfo: KustoPartitionInfo,
-    requiredColumns: Option[Array[String]] = None,
-    filters: Option[Array[Filter]] = None): RDD[Row] = {
+    requiredColumns: Array[String] = Array.empty,
+    filters: Array[Filter] = Array.empty): RDD[Row] = {
     setupBlobAccess(request, storage)
     val partitions = calculatePartitions(partitionInfo)
     val reader = new KustoReader(request, storage)
