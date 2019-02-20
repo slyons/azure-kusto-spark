@@ -55,12 +55,12 @@ private[kusto] case class KustoRelation(
   override def buildScan(requiredColumns: Array[String], filters: Array[Filter]): RDD[Row] =
     if (isLeanMode) {
       KustoReader.leanBuildScan(
-        KustoReadRequest(sparkSession, schema, cluster, database, query, appId, appKey, authorityId),
+        KustoReadRequest(sparkSession, schema, kustoCoordinates, query, appId, appKey, authorityId),
         requiredColumns, filters
       )
     } else {
       KustoReader.scaleBuildScan(
-        KustoReadRequest(sparkSession, schema, cluster, database, query, appId, appKey, authorityId),
+        KustoReadRequest(sparkSession, schema, kustoCoordinates, query, appId, appKey, authorityId),
         getTransientStorageParameters(storageAccount, storageContainer, storageAccountSecrete, isStorageSecreteKeyNotSas),
         KustoPartitionInfo(numPartitions, getPartitioningColumn(partitioningColumn, isLeanMode), getPartitioningMode(partitioningMode)),
         requiredColumns, filters

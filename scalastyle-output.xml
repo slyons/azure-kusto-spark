@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0">
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasink\KustoSinkProvider.scala">
+  <error column="0" line="3" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasink\KustoWriter.scala">
+  <error line="68" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="71" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="113" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="122" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="128" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="143" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="154" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="169" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="185" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="205" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="207" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="210" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="35" line="36" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="21" line="43" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="6" line="214" source="org.scalastyle.scalariform.MethodNamesChecker" severity="warning" message="Method name does not match the regular expression '^[a-z][A-Za-z0-9]*(_=)?$'"/>
+  <error column="0" line="3" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="18" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="19" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="29" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="15" line="208" source="org.scalastyle.scalariform.LowercasePatternMatchChecker" severity="warning" message="Lowercase pattern match (surround with ``, or add : Any)"/>
+  <error column="103" line="49" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 6 times in the file."/>
+  <error column="74" line="73" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal '&quot; appears 5 times in the file."/>
+  <error column="8" line="233" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoBlobAccessE2E.scala">
+  <error column="6" line="19" source="org.scalastyle.scalariform.ClassNamesChecker" severity="warning" message="Class name does not match the regular expression '^[A-Z][A-Za-z]*$'"/>
+  <error column="12" line="146" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="15" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="6" line="73" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="82" line="65" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 10 times in the file."/>
+  <error column="59" line="130" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal .blob.core.windows.net&quot; appears 3 times in the file."/>
+  <error column="6" line="67" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="6" line="73" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\utils\KustoDataSourceUtils.scala">
+  <error line="67" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="130" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="132" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="142" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="241" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="256" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="262" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="2" line="173" source="org.scalastyle.scalariform.NoWhitespaceBeforeLeftBracketChecker" severity="warning" message="There should be no space before a left bracket '['"/>
+  <error column="46" line="136" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="30" line="137" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="28" line="138" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="39" line="139" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="34" line="148" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="6" line="90" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="0" line="9" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="12" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="21" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="29" line="94" source="org.scalastyle.scalariform.EmptyInterpolatedStringChecker" severity="warning" message="Unnecessary use of interpolated string"/>
+  <error column="35" line="39" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 8 times in the file."/>
+  <error column="143" line="129" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal '&quot; appears 6 times in the file."/>
+  <error column="11" line="70" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+  <error column="10" line="80" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoSinkTests.scala">
+  <error line="52" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="8" line="69" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="19" line="68" source="org.scalastyle.scalariform.MethodNamesChecker" severity="warning" message="Method name does not match the regular expression '^[a-z][A-Za-z0-9]*(_=)?$'"/>
+  <error column="4" line="61" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="61" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasource\KustoRelation.scala">
+  <error line="99" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="16" line="104" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"/>
+  <error column="4" line="35" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"/>
+  <error column="4" line="106" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"/>
+  <error column="4" line="117" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\Sample\SimpleKustoDataSource.scala">
+  <error column="0" line="4" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="6" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasource\DefaultSource.scala">
+  <error line="28" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="99" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="69" line="41" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;lean&quot; appears 6 times in the file."/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\sql\extension\SparkExtension.scala">
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="6" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="8" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasink\KustoCsvSerializationUtils.scala">
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="9" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="32" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="4" line="33" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="8" line="17" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+  <error column="10" line="38" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\utils\KeyVaultADALAuthenticator.scala">
+  <error column="39" line="41" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="35" line="42" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="49" line="50" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="61" line="53" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="32" line="23" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="4" line="44" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="6" line="49" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasource\KustoResponseDeserializer.scala">
+  <error column="40" line="64" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="0" line="10" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="13" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\utils\CslCommandsGenerator.scala">
+  <error line="9" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="13" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="6" line="54" source="org.scalastyle.scalariform.ParameterNumberChecker" severity="warning" message="The number of parameters should not exceed 8"/>
+  <error column="5" line="38" source="org.scalastyle.scalariform.EmptyInterpolatedStringChecker" severity="warning" message="Unnecessary use of interpolated string"/>
+  <error column="82" line="42" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 3 times in the file."/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoSourceE2E.scala">
+  <error column="6" line="19" source="org.scalastyle.scalariform.ClassNamesChecker" severity="warning" message="Class name does not match the regular expression '^[A-Z][A-Za-z]*$'"/>
+  <error column="58" line="85" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="7" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="8" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="89" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="35" line="95" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;value&quot; appears 3 times in the file."/>
+  <error column="4" line="89" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="7" line="125" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\utils\DeviceAuthentication.scala">
+  <error column="0" line="3" source="org.scalastyle.scalariform.IllegalImportsChecker" severity="warning" message="Import from illegal package"/>
+  <error column="0" line="10" source="org.scalastyle.scalariform.IllegalImportsChecker" severity="warning" message="Import from illegal package"/>
+  <error column="0" line="11" source="org.scalastyle.scalariform.IllegalImportsChecker" severity="warning" message="Import from illegal package"/>
+  <error column="0" line="12" source="org.scalastyle.scalariform.IllegalImportsChecker" severity="warning" message="Import from illegal package"/>
+  <error column="17" line="57" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="23" line="64" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="71" line="27" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="23" line="30" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="73" line="35" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="57" line="42" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="39" line="52" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="62" line="60" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="55" line="35" source="org.scalastyle.file.RegexChecker" severity="warning" message="Regular expression matched 'println'"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\utils\DataTypeMapping.scala">
+  <error column="45" line="16" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="48" line="16" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="48" line="29" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="51" line="29" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="0" line="3" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="9" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;string&quot; appears 4 times in the file."/>
+  <error column="4" line="11" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;datetime&quot; appears 4 times in the file."/>
+  <error column="4" line="14" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;real&quot; appears 3 times in the file."/>
+  <error column="4" line="16" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;decimal&quot; appears 3 times in the file."/>
+  <error column="4" line="18" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;int&quot; appears 4 times in the file."/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\AuthenticationTests.scala">
+  <error column="6" line="17" source="org.scalastyle.scalariform.ClassNamesChecker" severity="warning" message="Class name does not match the regular expression '^[A-Z][A-Za-z]*$'"/>
+  <error column="4" line="37" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="65" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="13" line="20" source="org.scalastyle.scalariform.EmptyInterpolatedStringChecker" severity="warning" message="Unnecessary use of interpolated string"/>
+  <error column="98" line="41" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 4 times in the file."/>
+  <error column="99" line="44" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal .kusto.windows.net&quot; appears 3 times in the file."/>
+  <error column="31" line="47" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;value&quot; appears 4 times in the file."/>
+  <error column="4" line="37" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="4" line="65" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\utils\KustoClient.scala">
+  <error column="40" line="22" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="0" line="4" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasink\KustoSink.scala">
+  <error column="15" line="19" source="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" severity="warning" message="Public method must have explicit type"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="3" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="5" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\Sample\SimpleKustoDataSink.scala">
+  <error column="0" line="4" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="6" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoQueryUtilsTest.scala">
+  <error column="38" line="24" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\Sample\KustoConnectorDemo.scala">
+  <error column="73" line="32" source="org.scalastyle.file.WhitespaceEndOfLineChecker" severity="warning" message="Whitespace at end of line"/>
+  <error line="36" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="62" line="128" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="6" line="21" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="13" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="62" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="15" line="28" source="org.scalastyle.scalariform.EmptyInterpolatedStringChecker" severity="warning" message="Unnecessary use of interpolated string"/>
+  <error column="38" line="44" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 3 times in the file."/>
+  <error column="31" line="63" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;value&quot; appears 3 times in the file."/>
+  <error column="14" line="70" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;com.microsoft.kusto.spark.datasource&quot; appears 3 times in the file."/>
+  <error column="4" line="62" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="0" line="3" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="0" line="7" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="4" line="52" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="4" line="54" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="4" line="98" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="4" line="100" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="4" line="131" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="4" line="133" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="4" line="135" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoSourceTests.scala">
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoSinkBatchE2E.scala">
+  <error line="83" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="107" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="111" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="115" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="136" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error line="137" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="6" line="25" source="org.scalastyle.scalariform.ClassNamesChecker" severity="warning" message="Class name does not match the regular expression '^[A-Z][A-Za-z]*$'"/>
+  <error column="75" line="107" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="88" line="107" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="102" line="107" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="120" line="107" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="135" line="107" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="151" line="107" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="164" line="107" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="78" line="111" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="99" line="111" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="121" line="111" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="147" line="111" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="162" line="111" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="178" line="111" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="191" line="111" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="12" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="13" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="78" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="150" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="4" line="175" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="65" line="30" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 5 times in the file."/>
+  <error column="36" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;String&quot; appears 3 times in the file."/>
+  <error column="46" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Int&quot; appears 3 times in the file."/>
+  <error column="53" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Date&quot; appears 3 times in the file."/>
+  <error column="61" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Boolean&quot; appears 3 times in the file."/>
+  <error column="72" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;short&quot; appears 3 times in the file."/>
+  <error column="81" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Byte&quot; appears 3 times in the file."/>
+  <error column="89" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;floatie&quot; appears 3 times in the file."/>
+  <error column="100" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Timestamp&quot; appears 3 times in the file."/>
+  <error column="113" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Double&quot; appears 3 times in the file."/>
+  <error column="123" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;BigDecimal&quot; appears 3 times in the file."/>
+  <error column="137" line="84" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Long&quot; appears 3 times in the file."/>
+  <error column="14" line="87" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;com.microsoft.kusto.spark.datasource&quot; appears 3 times in the file."/>
+  <error column="19" line="88" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;value&quot; appears 5 times in the file."/>
+  <error column="4" line="78" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="4" line="150" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="4" line="175" source="org.scalastyle.scalariform.ImportGroupingChecker" severity="warning" message="Imports should be grouped together"/>
+  <error column="7" line="140" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoTestUtils.scala">
+  <error line="50" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="2" line="17" source="org.scalastyle.scalariform.NoWhitespaceBeforeLeftBracketChecker" severity="warning" message="There should be no space before a left bracket '['"/>
+  <error column="0" line="6" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="9" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoE2E.scala">
+  <error column="7" line="5" source="org.scalastyle.scalariform.ObjectNamesChecker" severity="warning" message="Object name does not match the regular expression '^[A-Z][A-Za-z]*$'"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasink\TempStorageCache.scala">
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="7" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\test\scala\com\microsoft\kusto\spark\KustoSinkStreamingE2E.scala">
+  <error line="94" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+  <error column="6" line="19" source="org.scalastyle.scalariform.ClassNamesChecker" severity="warning" message="Class name does not match the regular expression '^[A-Z][A-Za-z]*$'"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
+  <error column="0" line="8" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasource\KustoReader.scala">
+  <error column="32" line="85" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"/>
+  <error column="97" line="61" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 5 times in the file."/>
+  <error column="8" line="57" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+  <error column="8" line="88" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+ </file>
+ <file name="C:\GitHub\azure-kusto-spark\src\main\scala\com\microsoft\kusto\spark\datasource\KustoFilter.scala">
+  <error column="4" line="100" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"/>
+  <error column="0" line="5" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="0" line="6" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"/>
+  <error column="26" line="55" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal )&quot; appears 4 times in the file."/>
+  <error column="64" line="92" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal '&quot; appears 4 times in the file."/>
+ </file>
+</checkstyle>

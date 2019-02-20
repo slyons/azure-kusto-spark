@@ -36,7 +36,7 @@ private[kusto] object KustoReader {
     request: KustoReadRequest,
     requiredColumns: Array[String] = Array.empty,
     filters: Array[Filter] = Array.empty): RDD[Row] = {
-    
+
     val kustoClient = KustoClient.getAdmin(AadApplicationAuthentication(request.appId, request.appKey, request.authorityId), request.kustoCoordinates.cluster)
     val kustoResult = kustoClient.execute(request.kustoCoordinates.database, request.query)
     val serializer = KustoResponseDeserializer(kustoResult)
