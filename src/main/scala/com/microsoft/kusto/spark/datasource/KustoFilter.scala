@@ -25,37 +25,74 @@ private[kusto] object KustoFilter {
   def buildFilterExpression(schema: StructType, filter: Filter): Option[String] = {
 
     filter match {
-      case EqualTo(attr, value) => buildOperatorFilter(schema, attr, value, "==")
-      case EqualNullSafe(attr, value) => ??? // TODO
-      case GreaterThan(attr, value) => ??? // TODO
-      case GreaterThanOrEqual(attr, value) => ??? // TODO
-      case LessThan(attr, value) => ??? // TODO
-      case LessThanOrEqual(attr, value) => ??? // TODO
-      case In(attr, values) => ??? // TODO
-      case IsNull(attr) => ??? // TODO
-      case IsNotNull(attr) => ??? // TODO
-      case And(left, right) => ??? // TODO
-      case Or(left, right) => ??? // TODO
-      case Not(child) => ??? // TODO
-      case StringStartsWith(attr, value) => ??? // TODO
-      case StringEndsWith(attr, value) => ??? // TODO
-      case StringContains(attr, value) => ??? // TODO
+      case EqualTo(attr, value) => binaryScalarOperatorFilter(schema, attr, value, "==")
+      case EqualNullSafe(attr, value) if (value == null) => unaryScalarOperatorFilter(attr, "isnull")
+      case EqualNullSafe(attr, value) => binaryScalarOperatorFilter(schema, attr, value, "==")
+      case GreaterThan(attr, value) => binaryScalarOperatorFilter(schema, attr, value, ">")
+      case GreaterThanOrEqual(attr, value) => binaryScalarOperatorFilter(schema, attr, value, ">=")
+      case LessThan(attr, value) => binaryScalarOperatorFilter(schema, attr, value, "<")
+      case LessThanOrEqual(attr, value) => binaryScalarOperatorFilter(schema, attr, value, "<=")
+      case In(attr, values) => unaryOperatorOnValueSetFilter(schema, attr, values, "in")
+      case IsNull(attr) => unaryScalarOperatorFilter(attr, "isnull")
+      case IsNotNull(attr) => unaryScalarOperatorFilter(attr, "isnotnull")
+      case And(left, right) => binaryLogicalOperatorFilter(schema, left, right, "and")
+      case Or(left, right) => binaryLogicalOperatorFilter(schema, left, right, "or")
+      case Not(child) => unaryLogicalOperatorFilter(schema, child, "not")
+      case StringStartsWith(attr, value) => stringOperatorFilter(attr, value, "startswith_cs")
+      case StringEndsWith(attr, value) => stringOperatorFilter(attr, value, "endswith_cs")
+      case StringContains(attr, value) => stringOperatorFilter(attr, value, "contains_cs")
       case _ => None
     }
   }
 
-  private def buildOperatorFilter(schema: StructType, attr: String, value: Any, operator: String): Option[String] = {
+  private def binaryScalarOperatorFilter(schema: StructType, attr: String, value: Any, operator: String): Option[String] = {
     getType(schema, attr).map {
       dataType => s"$attr $operator ${toStringTagged(value, dataType)}"
     }
   }
 
+  private def unaryScalarOperatorFilter(attr: String, function: String): Option[String] = {
+    Some(s"$function($attr)")
+  }
+
+  private def binaryLogicalOperatorFilter(schema: StructType, leftFilter: Filter, rightFilter: Filter, operator: String): Option[String] = {
+    val left = buildFilterExpression(schema, leftFilter)
+    val right = if(left.isEmpty) None else buildFilterExpression(schema, rightFilter)
+
+    if (left.isEmpty || right.isEmpty) None else {
+      Some(s"(${left.get}) $operator (${right.get})")
+    }
+  }
+
+  private def unaryLogicalOperatorFilter(schema: StructType, childFilter: Filter, operator: String): Option[String] = {
+    val child = buildFilterExpression(schema, childFilter)
+
+    if (child.isEmpty) None else {
+      Some(s"$operator(${child.get})")
+    }
+  }
+
+  private  def stringOperatorFilter(attr: String, value: String, operator: String): Option[String] = {
+    Some(s"""$attr $operator "$value""")
+  }
+
+  private def toStringList(values: Array[Any], dataType: DataType): String = {
+    val combined = values.map(value => toStringTagged(value, dataType)).mkString(", ")
+    if (combined.isEmpty) "" else combined
+  }
+
+  private def unaryOperatorOnValueSetFilter(schema: StructType, attr: String, value: Array[Any], operator: String): Option[String] = {
+    getType(schema, attr).map {
+      dataType => s"$attr $operator (${toStringList(value, dataType)})"
+    }
+  }
+
   private def toStringTagged(value: Any, dataType: DataType): String = {
     dataType match {
-      case StringType => s"'$value'"
-      case DateType => s"\\'${value.asInstanceOf[Date]}\\'"
-      case TimestampType => s"\\'${value.asInstanceOf[Timestamp]}\\'"
-      case _ => s"'${value.toString}'"
+      case StringType => s"'${value.toString.replace("'", "\'")}'"
+      case DateType => s"'${value.asInstanceOf[Date]}'"
+      case TimestampType => s"'${value.asInstanceOf[Timestamp]}'"
+      case _ => s"'${value.toString.replace("'", "\'")}'"
     }
   }
 
