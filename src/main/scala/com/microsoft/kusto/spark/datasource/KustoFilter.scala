@@ -47,7 +47,7 @@ private[kusto] object KustoFilter {
 
   private def binaryScalarOperatorFilter(schema: StructType, attr: String, value: Any, operator: String): Option[String] = {
     getType(schema, attr).map {
-      dataType => s"$attr $operator ${toStringTagged(value, dataType)}"
+      dataType => s"$attr $operator ${format(value, dataType)}"
     }
   }
 
@@ -73,11 +73,11 @@ private[kusto] object KustoFilter {
   }
 
   private  def stringOperatorFilter(attr: String, value: String, operator: String): Option[String] = {
-    Some(s"""$attr $operator "$value""")
+    Some(s"""$attr $operator '$value'""")
   }
 
   private def toStringList(values: Array[Any], dataType: DataType): String = {
-    val combined = values.map(value => toStringTagged(value, dataType)).mkString(", ")
+    val combined = values.map(value => format(value, dataType)).mkString(", ")
     if (combined.isEmpty) "" else combined
   }
 
@@ -87,12 +87,12 @@ private[kusto] object KustoFilter {
     }
   }
 
-  private def toStringTagged(value: Any, dataType: DataType): String = {
+  private def format(value: Any, dataType: DataType): String = {
     dataType match {
-      case StringType => s"'${value.toString.replace("'", "\'")}'"
-      case DateType => s"'${value.asInstanceOf[Date]}'"
-      case TimestampType => s"'${value.asInstanceOf[Timestamp]}'"
-      case _ => s"'${value.toString.replace("'", "\'")}'"
+      case StringType => s"'${value.toString.replace("\'", "\\'")}'"
+      case DateType => s"datetime('${value.asInstanceOf[Date]}')"
+      case TimestampType => s"datetime('${value.asInstanceOf[Timestamp]}')"
+      case _ => value.toString
     }
   }
 
