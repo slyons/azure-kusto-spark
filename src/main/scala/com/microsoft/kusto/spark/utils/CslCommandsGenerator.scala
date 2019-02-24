@@ -52,16 +52,16 @@ object CslCommandsGenerator{
 
   // Export data to blob
   def generateExportDataCommand(
-                                 appId: String,
-                                 query: String,
-                                 storageAccountName: String,
-                                 container: String,
-                                 directory: String,
-                                 secret: String,
-                                 useKeyNotSas: Boolean = true,
-                                 partitionId: Int,
-                                 partitionPredicate: Option[String] = None,
-                                 isAsync: Boolean): String = {
+     appId: String,
+     query: String,
+     storageAccountName: String,
+     container: String,
+     directory: String,
+     secret: String,
+     useKeyNotSas: Boolean = true,
+     partitionId: Int,
+     partitionPredicate: Option[String] = None,
+     isAsync: Boolean): String = {
 
     val secretString = if (useKeyNotSas) s""";" h@"$secret"""" else s"""?" h@"$secret""""
     val blobUri = s"https://$storageAccountName.blob.core.windows.net"

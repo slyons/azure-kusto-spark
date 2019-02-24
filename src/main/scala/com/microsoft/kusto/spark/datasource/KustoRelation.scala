@@ -56,14 +56,14 @@ private[kusto] case class KustoRelation(
     if (isLeanMode) {
       KustoReader.leanBuildScan(
         KustoReadRequest(sparkSession, schema, kustoCoordinates, query, appId, appKey, authorityId),
-        requiredColumns, filters
+        KustoFiltering(requiredColumns, filters)
       )
     } else {
       KustoReader.scaleBuildScan(
         KustoReadRequest(sparkSession, schema, kustoCoordinates, query, appId, appKey, authorityId),
         getTransientStorageParameters(storageAccount, storageContainer, storageAccountSecrete, isStorageSecreteKeyNotSas),
         KustoPartitionInfo(numPartitions, getPartitioningColumn(partitioningColumn, isLeanMode), getPartitioningMode(partitioningMode)),
-        requiredColumns, filters
+        KustoFiltering(requiredColumns, filters)
       )
     }
 

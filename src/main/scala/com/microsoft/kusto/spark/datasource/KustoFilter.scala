@@ -6,6 +6,21 @@ import org.apache.spark.sql.sources._
 import org.apache.spark.sql.types._
 
 private[kusto] object KustoFilter {
+  // Augment the original query to include column pruning and filtering
+  def pruneAndFilter(originalSchema: StructType, originalQuery: String, filtering: KustoFiltering): String = {
+    var query = originalQuery
+
+    if (!filtering.filters.isEmpty) {
+      query += KustoFilter.buildFiltersClause(originalSchema, filtering.filters)
+    }
+
+    if (!filtering.columns.isEmpty) {
+      query += KustoFilter.buildColumnsClause(filtering.columns)
+    }
+
+    query
+  }
+
   def pruneSchema(schema: StructType, columns: Array[String]): StructType = {
     val fieldMap = Map(schema.fields.map(x => x.name -> x): _*)
     new StructType(columns.map(name => fieldMap(name)))
@@ -19,7 +34,7 @@ private[kusto] object KustoFilter {
 
   def buildFiltersClause(schema: StructType, filters: Seq[Filter]): String = {
     val filterExpressions = filters.flatMap(f => buildFilterExpression(schema, f)).mkString(" and ")
-    if (filterExpressions.isEmpty) "" else "| where " + filterExpressions
+    if (filterExpressions.isEmpty) "" else " | where " + filterExpressions
   }
 
   def buildFilterExpression(schema: StructType, filter: Filter): Option[String] = {
@@ -38,9 +53,9 @@ private[kusto] object KustoFilter {
       case And(left, right) => binaryLogicalOperatorFilter(schema, left, right, "and")
       case Or(left, right) => binaryLogicalOperatorFilter(schema, left, right, "or")
       case Not(child) => unaryLogicalOperatorFilter(schema, child, "not")
-      case StringStartsWith(attr, value) => stringOperatorFilter(attr, value, "startswith_cs")
-      case StringEndsWith(attr, value) => stringOperatorFilter(attr, value, "endswith_cs")
-      case StringContains(attr, value) => stringOperatorFilter(attr, value, "contains_cs")
+      case StringStartsWith(attr, value) => stringOperatorFilter(schema, attr, value, "startswith_cs")
+      case StringEndsWith(attr, value) => stringOperatorFilter(schema, attr, value, "endswith_cs")
+      case StringContains(attr, value) => stringOperatorFilter(schema, attr, value, "contains_cs")
       case _ => None
     }
   }
@@ -72,8 +87,11 @@ private[kusto] object KustoFilter {
     }
   }
 
-  private  def stringOperatorFilter(attr: String, value: String, operator: String): Option[String] = {
-    Some(s"""$attr $operator '$value'""")
+  private  def stringOperatorFilter(schema: StructType, attr: String, value: String, operator: String): Option[String] = {
+    // Will return 'None' if 'attr' is not part of the 'schema'
+    getType(schema, attr).map {
+      _ => s"""$attr $operator '$value'"""
+    }
   }
 
   private def toStringList(values: Array[Any], dataType: DataType): String = {

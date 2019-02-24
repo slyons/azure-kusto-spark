@@ -39,7 +39,7 @@
    <parameter name="ignoreImports"><![CDATA[false]]></parameter>
   </parameters>
  </check>
- <check class="org.scalastyle.scalariform.ClassNamesChecker" level="warning" enabled="true">
+ <check class="org.scalastyle.scalariform.ClassNamesChecker" level="warning" enabled="false">
   <parameters>
    <parameter name="regex"><![CDATA[^[A-Z][A-Za-z]*$]]></parameter>
   </parameters>

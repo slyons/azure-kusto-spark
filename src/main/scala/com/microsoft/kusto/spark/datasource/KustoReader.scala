@@ -16,46 +16,46 @@ private[kusto] case class KustoPartition(predicate: Option[String], idx: Int) ex
 
 private[kusto] case class KustoPartitionInfo(num: Int, column: String, mode: String)
 
-private[kusto] case class KustoStorageParameters(account: String,
-                                                 secrete: String,
-                                                 container: String,
-                                                 isKeyNotSas: Boolean)
+private[kusto] case class KustoStorageParameters(account: String, secrete: String, container: String, isKeyNotSas: Boolean)
 
-private[kusto] case class KustoReadRequest(sparkSession: SparkSession,
-                                           schema: StructType,
-                                           kustoCoordinates: KustoCoordinates,
-                                           query: String,
-                                           appId: String,
-                                           appKey: String,
-                                           authorityId: String)
+private[kusto] case class KustoFiltering(columns: Array[String] = Array.empty, filters: Array[Filter] = Array.empty)
+
+private[kusto] case class KustoReadRequest(
+  sparkSession: SparkSession,
+  schema: StructType,
+  kustoCoordinates: KustoCoordinates,
+  query: String,
+  appId: String,
+  appKey: String,
+  authorityId: String)
 
 private[kusto] object KustoReader {
   private val myName = this.getClass.getSimpleName
 
   private[kusto] def leanBuildScan(
     request: KustoReadRequest,
-    requiredColumns: Array[String] = Array.empty,
-    filters: Array[Filter] = Array.empty): RDD[Row] = {
+    filtering: KustoFiltering = KustoFiltering.apply()): RDD[Row] = {
 
     val kustoClient = KustoClient.getAdmin(AadApplicationAuthentication(request.appId, request.appKey, request.authorityId), request.kustoCoordinates.cluster)
-    val kustoResult = kustoClient.execute(request.kustoCoordinates.database, request.query)
+    val filteredQuery = KustoFilter.pruneAndFilter(request.schema, request.query, filtering)
+    val kustoResult = kustoClient.execute(request.kustoCoordinates.database, filteredQuery)
     val serializer = KustoResponseDeserializer(kustoResult)
     request.sparkSession.createDataFrame(serializer.toRows, serializer.getSchema).rdd
   }
 
   private[kusto] def scaleBuildScan(
-    request: KustoReadRequest,
-    storage: KustoStorageParameters,
-    partitionInfo: KustoPartitionInfo,
-    requiredColumns: Array[String] = Array.empty,
-    filters: Array[Filter] = Array.empty): RDD[Row] = {
+     request: KustoReadRequest,
+     storage: KustoStorageParameters,
+     partitionInfo: KustoPartitionInfo,
+     filtering: KustoFiltering = KustoFiltering.apply()): RDD[Row] = {
+
     setupBlobAccess(request, storage)
     val partitions = calculatePartitions(partitionInfo)
     val reader = new KustoReader(request, storage)
     val directory = KustoQueryUtils.simplifyName(s"${request.appId}/dir${UUID.randomUUID()}/")
 
     for (partition <- partitions) {
-      reader.exportPartitionToBlob(partition.asInstanceOf[KustoPartition], request, storage, directory)
+      reader.exportPartitionToBlob(partition.asInstanceOf[KustoPartition], request, storage, directory, filtering)
     }
 
     val path = s"wasbs://${storage.container}@${storage.account}.blob.core.windows.net/$directory"
@@ -99,14 +99,16 @@ private[kusto] class KustoReader(request: KustoReadRequest, storage: KustoStorag
 
   // Export a single partition from Kusto to transient Blob storage.
   // Returns the directory path for these blobs
-  private[kusto] def exportPartitionToBlob(partition: KustoPartition,
-                                           request: KustoReadRequest,
-                                           storage: KustoStorageParameters,
-                                           directory: String): Unit = {
+  private[kusto] def exportPartitionToBlob(
+    partition: KustoPartition,
+    request: KustoReadRequest,
+    storage: KustoStorageParameters,
+    directory: String,
+    filtering: KustoFiltering): Unit = {
 
     val exportCommand = CslCommandsGenerator.generateExportDataCommand(
       request.appId,
-      request.query,
+      KustoFilter.pruneAndFilter(request.schema, request.query, filtering),
       storage.account,
       storage.container,
       directory,
