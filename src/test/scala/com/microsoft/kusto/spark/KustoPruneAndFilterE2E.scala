@@ -140,10 +140,10 @@ class KustoPruneAndFilterE2E extends FlatSpec with BeforeAndAfterAll {
 
     val dfResultPruned = spark.read.kusto(cluster, database, query, conf).select("ColA").sort("ColA")
     val origPruned = orig.map(x => x._1).sorted
-    val halfSize = origPruned.length/2
-
-    if (halfSize < 1) fail(s"Table size is too small (${origPruned.length})")
     assert(dfResultPruned.count() == origPruned.length)
+
+    val halfSize = origPruned.length/2
+    if (halfSize < 1) fail(s"Table size is too small (${origPruned.length})")
     assert(dfResultPruned.take(halfSize).drop(halfSize - 1) == origPruned(halfSize))
 
     // Cleanup

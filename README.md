@@ -31,7 +31,7 @@ Future releases will extend Kusto connector capabilities in the following areas:
 For Scala/Java applications using Maven project definitions, link your application with the artifact below. 
 
 ```
-groupId = com.microsoft.azure
+groupId = com.microsoft.kusto
 artifactId = spark-kusto-connector
 version = 1.0.0-Beta-01 
 ```
@@ -39,7 +39,7 @@ version = 1.0.0-Beta-01
 **In Maven**:
  ```
    <dependency>
-     <groupId>com.microsoft.azure</groupId>
+     <groupId>com.microsoft.kusto</groupId>
      <artifactId>spark-kusto-connector</artifactId>
      <version>1.0.0-Beta-01</version>
    </dependency>
