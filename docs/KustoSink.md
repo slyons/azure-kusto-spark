@@ -54,7 +54,7 @@ that is using it. Please verify the following before using Kusto connector:
  set to "FailIfNotExist" (default), the table must already exist, and the client must have 
  'admin' privileges on the table.
  
- **Authentication Parameters** can be found here - [AAD Application Authentication](AuthenticationMethods.md). 
+ **Authentication Parameters** can be found here - [AAD Application Authentication](Authentication.md). 
  
  **Optional Parameters:** 
  * **KUSTO_TABLE_CREATE_OPTIONS**: 

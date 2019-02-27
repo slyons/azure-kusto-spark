@@ -122,9 +122,7 @@ class KustoSourceE2E extends FlatSpec with BeforeAndAfterAll {
     val orig = dfOrig.select("name", "value").rdd.map(x => (x.getString(0), x.getInt(1))).collect().sortBy(_._2)
     val result = dfResult.select("ColA", "ColB").rdd.map(x => (x.getString(0), x.getInt(1))).collect().sortBy(_._2)
 
-    for(idx <- orig.indices) {
-      assert(orig(idx) == result(idx))
-    }
+    assert(orig.deep == result.deep)
 
     // Cleanup
     KustoTestUtils.tryDropAllTablesByPrefix(kustoAdminClient, database, "KustoSparkReadWriteTest")

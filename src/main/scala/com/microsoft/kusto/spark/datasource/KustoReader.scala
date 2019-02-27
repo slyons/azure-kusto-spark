@@ -59,7 +59,21 @@ private[kusto] object KustoReader {
     }
 
     val path = s"wasbs://${storage.container}@${storage.account}.blob.core.windows.net/$directory"
-    request.sparkSession.read.parquet(s"$path").rdd
+    try {
+      request.sparkSession.read.parquet(s"$path").rdd
+    }
+    catch {
+      case ex: Exception => {
+        // Check whether the result is empty, causing an IO exception on reading empty parquet file
+        // We don't mind generating the filtered query again - it only happens upon exception
+        val filteredQuery = KustoFilter.pruneAndFilter(request.schema, request.query, filtering)
+        val count = KDSU.countRows(reader.client, filteredQuery, request.kustoCoordinates.database)
+
+        if (count == 0) {
+          request.sparkSession.emptyDataFrame.rdd
+        } else { throw ex }
+      }
+    }
   }
 
   private[kusto] def setupBlobAccess(request: KustoReadRequest, storage: KustoStorageParameters): Unit = {

@@ -9,8 +9,7 @@ import com.microsoft.kusto.spark.sql.extension.SparkExtension._
 import com.microsoft.kusto.spark.utils.CslCommandsGenerator._
 import com.microsoft.kusto.spark.utils.{KustoQueryUtils, KustoDataSourceUtils => KDSU}
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
-import org.apache.spark.sql.{SQLContext, SparkSession}
+import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
@@ -134,17 +133,19 @@ class KustoPruneAndFilterE2E extends FlatSpec with BeforeAndAfterAll {
     val result = dfResult.select("ColA", "ColB").rdd.map(x => (x.getString(0), x.getInt(1))).collect().sortBy(_._2)
 
     // Verify correctness, without pruning and filtering
-    for(idx <- orig.indices) {
-      assert(orig(idx) == result(idx))
-    }
+    assert(orig.deep == result.deep)
 
-    val dfResultPruned = spark.read.kusto(cluster, database, query, conf).select("ColA").sort("ColA")
+    val dfResultPruned = spark.read.kusto(cluster, database, query, conf)
+      .select("ColA")
+      .sort("ColA")
+      .collect()
+      .map(x => x.getString(0))
+      .sorted
+
     val origPruned = orig.map(x => x._1).sorted
-    assert(dfResultPruned.count() == origPruned.length)
 
-    val halfSize = origPruned.length/2
-    if (halfSize < 1) fail(s"Table size is too small (${origPruned.length})")
-    assert(dfResultPruned.take(halfSize).drop(halfSize - 1) == origPruned(halfSize))
+    assert(dfResultPruned.length == origPruned.length)
+    assert(origPruned.deep == dfResultPruned.deep)
 
     // Cleanup
     KustoTestUtils.tryDropAllTablesByPrefix(kustoAdminClient, database, "KustoSparkReadWriteWithFiltersTest")
@@ -191,14 +192,16 @@ class KustoPruneAndFilterE2E extends FlatSpec with BeforeAndAfterAll {
       KustoOptions.KUSTO_BLOB_CONTAINER -> container
     )
 
-    val orig = dfOrig.select("name", "value").rdd.map(x => (x.getString(0), x.getInt(1))).collect().sortBy(_._2)
-
     val dfResult = spark.read.kusto(cluster, database, query, conf)
-    val dfFiltered = dfResult.where(dfResult.col("ColA").endsWith("row-1")).filter("ColB > 12").filter("ColB <= 25")
+    val dfFiltered = dfResult
+      .where(dfResult.col("ColA").startsWith("row-2"))
+      .filter("ColB > 12")
+      .filter("ColB <= 21")
+      .collect().sortBy(x => x.getAs[Int](1))
 
-    // Verify we only get 21
-    assert(dfFiltered.count() == 1)
-    assert(dfFiltered.first().get(1) == 21)
+
+    val expected = Array(Row("row-20", 20), Row("row-21", 21))
+    assert(dfFiltered.deep == expected.deep)
 
     // Cleanup
     KustoTestUtils.tryDropAllTablesByPrefix(kustoAdminClient, database, "KustoSparkReadWriteWithFiltersTest")

@@ -340,7 +340,7 @@ object KustoDataSourceUtils{
     }
   }
 
-  private [kusto] def getAndValidateTransientStorageParameters(storageAccount: Option[String],
+  private[kusto] def getAndValidateTransientStorageParameters(storageAccount: Option[String],
                                                        storageContainer: Option[String],
                                                        storageAccountSecret: Option[String],
                                                        storageSecretIsAccountKey: Boolean): KustoStorageParameters = {
@@ -357,5 +357,9 @@ object KustoDataSourceUtils{
     }
 
     KustoStorageParameters(storageAccount.get, storageAccountSecret.get, storageContainer.get, storageSecretIsAccountKey)
+  }
+
+  private[kusto] def countRows(client: Client, query: String, database: String): Int = {
+    client.execute(database, generateCountQuery(query)).getValues.get(0).get(0).toInt
   }
 }
