@@ -1,11 +1,16 @@
 package com.microsoft.kusto.spark.utils
 
 import java.io.IOException
+import org.apache.log4j.{Level, Logger}
 
 import com.microsoft.azure.CloudException
 import com.microsoft.azure.keyvault.KeyVaultClient
 import com.microsoft.kusto.spark.authentication._
 import com.microsoft.kusto.spark.datasource._
+
+import com.microsoft.azure.synapse.tokenlibrary.{AccessToken, TokenLibraryLinkedService}
+import com.twitter.util.{Await}
+
 
 object KeyVaultUtils {
   val AppId = "kustoAppId"
@@ -16,6 +21,7 @@ object KeyVaultUtils {
   val StorageAccountKey = "blobStorageAccountKey"
   val Container = "blobContainer"
   var cachedClient: KeyVaultClient = _
+  private val TLS = new TokenLibraryLinkedService()
 
   private def getClient(clientID: String, clientPassword: String): KeyVaultClient ={
     if(cachedClient == null) {
@@ -32,21 +38,38 @@ object KeyVaultUtils {
         val client = getClient(app.keyVaultAppID, app.keyVaultAppKey)
         getStorageParamsFromKeyVaultImpl(client, app.uri)
       case certificate: KeyVaultCertificateAuthentication => throw new UnsupportedOperationException("certificates are not yet supported")
+      case linkServiceName: KustoLSRAuthentication => throw new UnsupportedOperationException("LSR are not yet supported")
     }
   }
 
   @throws[CloudException]
   @throws[IOException]
-  def getAadAppParametersFromKeyVault(keyVaultAuthentication: KeyVaultAuthentication): AadApplicationAuthentication={
+  def getAadAppParametersFromKeyVault(keyVaultAuthentication: KustoAuthentication): KustoAuthentication={
     keyVaultAuthentication match {
       case app: KeyVaultAppAuthentication =>
         val client = getClient(app.keyVaultAppID, app.keyVaultAppKey)
         getAadAppParamsFromKeyVaultImpl(client, app.uri)
       case certificate: KeyVaultCertificateAuthentication => throw new UnsupportedOperationException("certificates are not yet supported")
+      case linkService: KustoLSRAuthentication =>
+        val accessToken = getLSRToken(linkService.linkedServiceName)
+        KustoAccessTokenAuthentication(accessToken.token)
     }
   }
 
-  private def getAadAppParamsFromKeyVaultImpl(client: KeyVaultClient, uri: String): AadApplicationAuthentication ={
+  def getClusterFromLSR(linkServiceName: String): String={
+    val accessToken = getLSRToken(linkServiceName)
+    accessToken.serverName match {
+      case Some(serverName) => serverName
+      case None => ""
+    }
+  }
+
+  private def getLSRToken(linkServiceName: String): AccessToken={
+    val resource = s"""{"audience": "$linkServiceName", "name": ""}"""
+    Await.result(TLS.getAccessTokenAsync(resource))
+  }
+
+  private def getAadAppParamsFromKeyVaultImpl(client: KeyVaultClient, uri: String): KustoAuthentication ={
     val id = client.getSecret(uri, AppId)
     val key = client.getSecret(uri, AppKey)
 

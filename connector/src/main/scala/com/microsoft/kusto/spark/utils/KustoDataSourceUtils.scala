@@ -90,7 +90,14 @@ object KustoDataSourceUtils {
   def parseSourceParameters(parameters: Map[String, String]): SourceParameters = {
     // Parse KustoTableCoordinates - these are mandatory options
     val database = parameters.get(KustoSourceOptions.KUSTO_DATABASE)
-    val cluster = parameters.get(KustoSourceOptions.KUSTO_CLUSTER)
+    var cluster = parameters.get(KustoSourceOptions.KUSTO_CLUSTER)
+
+    val synapseLinkedServiceName = parameters.getOrElse("spark.synapse.linkedService", "")
+    if (!synapseLinkedServiceName.isEmpty && cluster.isEmpty) {
+      logError("parseSourceParameters", "Hi noam spark connector")
+      logError("parseSourceParameters", s"Get linked service ${synapseLinkedServiceName} info ")
+      cluster = Some(KeyVaultUtils.getClusterFromLSR(synapseLinkedServiceName))
+    }
 
     if (database.isEmpty) {
       throw new InvalidParameterException("KUSTO_DATABASE parameter is missing. Must provide a destination database name")
@@ -110,6 +117,7 @@ object KustoDataSourceUtils {
     val keyVaultUri: String = parameters.getOrElse(KustoSourceOptions.KEY_VAULT_URI, "")
     var accessToken: String = ""
     var keyVaultAuthentication: Option[KeyVaultAuthentication] = None
+
     if (keyVaultUri != "") {
       // KeyVault Authentication
       val keyVaultAppId: String = parameters.getOrElse(KustoSourceOptions.KEY_VAULT_APP_ID, "")
@@ -133,6 +141,8 @@ object KustoDataSourceUtils {
       !accessToken.isEmpty
     }) {
       authentication = KustoAccessTokenAuthentication(accessToken)
+    } else if (!synapseLinkedServiceName.isEmpty) {
+      authentication = KustoLSRAuthentication(synapseLinkedServiceName);
     } else if (keyVaultUri.isEmpty) {
       val token = DeviceAuthentication.acquireAccessTokenUsingDeviceCodeFlow(clusterUrl)
       authentication = KustoAccessTokenAuthentication(token)
@@ -363,31 +373,35 @@ object KustoDataSourceUtils {
     }
   }
 
-  private[kusto] def mergeKeyVaultAndOptionsAuthentication(paramsFromKeyVault: AadApplicationAuthentication,
+  private[kusto] def mergeKeyVaultAndOptionsAuthentication(paramsFromKeyVault: KustoAuthentication,
                                                            authenticationParameters: Option[KustoAuthentication]): KustoAuthentication = {
     if (authenticationParameters.isEmpty) {
       // We have both keyVault and AAD application params, take from options first and throw if both are empty
       try {
         val app = authenticationParameters.asInstanceOf[AadApplicationAuthentication]
-        AadApplicationAuthentication(
-          ID = if (app.ID == "") {
-            if (paramsFromKeyVault.ID == "") {
-              throw new InvalidParameterException("AADApplication ID is empty. Please pass it in keyVault or options")
-            }
-            paramsFromKeyVault.ID
-          } else {
-            app.ID
-          },
-          password = if (app.password == "") {
-            if (paramsFromKeyVault.password == "AADApplication key is empty. Please pass it in keyVault or options") {
-              throw new InvalidParameterException("")
-            }
-            paramsFromKeyVault.password
-          } else {
-            app.password
-          },
-          authority = if (app.authority == "microsoft.com") paramsFromKeyVault.authority else app.authority
-        )
+        paramsFromKeyVault match {
+            case keyVaultParams: AadApplicationAuthentication => 
+              AadApplicationAuthentication(
+                ID = if (app.ID == "") {
+                  if (keyVaultParams.ID == "") {
+                    throw new InvalidParameterException("AADApplication ID is empty. Please pass it in keyVault or options")
+                  }
+                  keyVaultParams.ID
+                } else {
+                  app.ID
+                },
+                password = if (app.password == "") {
+                  if (keyVaultParams.password == "AADApplication key is empty. Please pass it in keyVault or options") {
+                    throw new InvalidParameterException("")
+                  }
+                  keyVaultParams.password
+                } else {
+                  app.password
+                },
+                authority = if (app.authority == "microsoft.com") keyVaultParams.authority else app.authority
+              )
+            case _ => paramsFromKeyVault
+        }
       } catch {
         case _: ClassCastException => throw new UnsupportedOperationException("keyVault authentication can be combined only with AADAplicationAuthentication")
       }

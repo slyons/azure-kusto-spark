@@ -4,8 +4,8 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.function
 
 import com.microsoft.azure.kusto.data.ConnectionStringBuilder
-import com.microsoft.kusto.spark.authentication.{AadApplicationAuthentication, KeyVaultAuthentication, KustoAccessTokenAuthentication, KustoAuthentication}
-import com.microsoft.kusto.spark.utils.{KustoConstants => KCONST}
+import com.microsoft.kusto.spark.authentication.{AadApplicationAuthentication, KeyVaultAuthentication, KustoAccessTokenAuthentication, KustoAuthentication, KustoLSRAuthentication}
+import com.microsoft.kusto.spark.utils.{KustoDataSourceUtils, KustoConstants => KCONST}
 
 object KustoClientCache {
   var clientCache = new ConcurrentHashMap[AliasAndAuth, KustoClient]
@@ -20,22 +20,29 @@ object KustoClientCache {
   }
 
   private def createClient(aliasAndAuth: AliasAndAuth): KustoClient = {
-    val (engineKcsb, ingestKcsb) = aliasAndAuth.authentication match {
+    val resolvedAuthentication = aliasAndAuth.authentication match {
+      case null => throw new MatchError("Can't create ConnectionStringBuilder with null authentication params")
+      case keyVaultParams: KustoLSRAuthentication =>
+        KeyVaultUtils.getAadAppParametersFromKeyVault(keyVaultParams)
+      case keyVaultParams: KeyVaultAuthentication =>
+        KeyVaultUtils.getAadAppParametersFromKeyVault(keyVaultParams)
+      case _ => aliasAndAuth.authentication
+    }
+
+    KustoDataSourceUtils.logError("createClient", s"resolvedAuthentication $resolvedAuthentication")
+
+    val (engineKcsb, ingestKcsb) = resolvedAuthentication match {
       case null => throw new MatchError("Can't create ConnectionStringBuilder with null authentication params")
       case app: AadApplicationAuthentication => (
         ConnectionStringBuilder.createWithAadApplicationCredentials(aliasAndAuth.engineUri, app.ID, app.password, app.authority),
         ConnectionStringBuilder.createWithAadApplicationCredentials(aliasAndAuth.ingestUri, app.ID, app.password, app.authority)
       )
-      case keyVaultParams: KeyVaultAuthentication =>
-        val app = KeyVaultUtils.getAadAppParametersFromKeyVault(keyVaultParams)
+      case userToken: KustoAccessTokenAuthentication => 
+        KustoDataSourceUtils.logError("createClient with token", s"link:${aliasAndAuth.engineUri}, token: $userToken")
         (
-          ConnectionStringBuilder.createWithAadApplicationCredentials(aliasAndAuth.engineUri, app.ID, app.password, app.authority),
-          ConnectionStringBuilder.createWithAadApplicationCredentials(aliasAndAuth.ingestUri, app.ID, app.password, app.authority)
+          ConnectionStringBuilder.createWithAadAccessTokenAuthentication(aliasAndAuth.engineUri, userToken.token),
+          ConnectionStringBuilder.createWithAadAccessTokenAuthentication(aliasAndAuth.ingestUri, userToken.token)
         )
-      case userToken: KustoAccessTokenAuthentication => (
-        ConnectionStringBuilder.createWithAadAccessTokenAuthentication(aliasAndAuth.engineUri, userToken.token),
-        ConnectionStringBuilder.createWithAadAccessTokenAuthentication(aliasAndAuth.ingestUri, userToken.token)
-      )
     }
 
     engineKcsb.setClientVersionForTracing(KCONST.clientName)

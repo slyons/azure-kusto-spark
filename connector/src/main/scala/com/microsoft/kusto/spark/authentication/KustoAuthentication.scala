@@ -50,3 +50,12 @@ case class KustoAccessTokenAuthentication(token: String) extends KustoAuthentica
   override def hashCode(): Int = token.hashCode
 }
 
+case class KustoLSRAuthentication(linkedServiceName: String) extends KeyVaultAuthentication(linkedServiceName) {
+  def canEqual(that: Any) : Boolean = that.isInstanceOf[KustoLSRAuthentication]
+  override def equals(that: Any) : Boolean = that match {
+    case auth : KustoLSRAuthentication => linkedServiceName == auth.linkedServiceName
+    case _ => false
+  }
+
+  override def hashCode(): Int = linkedServiceName.hashCode
+}
