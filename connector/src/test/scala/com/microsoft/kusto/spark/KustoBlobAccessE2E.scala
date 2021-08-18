@@ -8,7 +8,7 @@ import com.microsoft.azure.kusto.data.auth.ConnectionStringBuilder
 import com.microsoft.kusto.spark.datasink.KustoSinkOptions
 import com.microsoft.kusto.spark.datasource.{KustoResponseDeserializer, KustoSourceOptions, KustoStorageParameters}
 import com.microsoft.kusto.spark.utils.{CslCommandsGenerator, KustoBlobStorageUtils, KustoQueryUtils, KustoDataSourceUtils => KDSU}
-import com.microsoft.kusto.spark.sql.extension.SparkExtension._
+import com.microsoft.kusto.spark.sql.extension.SparkExtensionInternal._
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{SQLContext, SparkSession}
 import org.junit.runner.RunWith

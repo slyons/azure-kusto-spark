@@ -15,7 +15,7 @@ import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}
 
 import scala.concurrent.duration.FiniteDuration
 
-class DefaultSource extends CreatableRelationProvider
+class DefaultSourceInternal extends CreatableRelationProvider
   with RelationProvider with DataSourceRegister {
   var authenticationParameters: Option[KustoAuthentication] = None
   var kustoCoordinates: KustoCoordinates = _

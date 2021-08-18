@@ -1,15 +1,16 @@
-package com.microsoft.kusto.spark
+package com.microsoft.kusto.spark.utils
 
 import java.security.InvalidParameterException
 import java.util.UUID
+
 import com.microsoft.azure.kusto.data.auth.ConnectionStringBuilder
 import com.microsoft.azure.kusto.data.{Client, ClientFactory}
 import com.microsoft.kusto.spark.datasink.{KustoSinkOptions, SparkIngestionProperties}
 import com.microsoft.kusto.spark.datasource.KustoSourceOptions
-import com.microsoft.kusto.spark.sql.extension.SparkExtension.DataFrameReaderExtension
 import com.microsoft.kusto.spark.utils.CslCommandsGenerator._
-import com.microsoft.kusto.spark.utils.{KustoQueryUtils, KustoDataSourceUtils => KDSU}
-import org.apache.spark.sql.{Column, DataFrame, SaveMode, SparkSession, functions}
+import com.microsoft.kusto.spark.sql.extension.SparkExtensionInternal._
+import com.microsoft.kusto.spark.utils.{KustoDataSourceUtils => KDSU}
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.TimeoutException
@@ -99,7 +100,7 @@ private [kusto] object KustoTestUtils {
              ): Unit = {
 
     df.write
-      .format("com.microsoft.kusto.spark.datasource")
+      .format("com.microsoft.kusto.spark.datasource.DefaultSourceInternal")
       .partitionBy("value")
       .option(KustoSinkOptions.KUSTO_CLUSTER, kustoConnectionOptions.Cluster)
       .option(KustoSinkOptions.KUSTO_DATABASE, kustoConnectionOptions.Database)
@@ -112,7 +113,6 @@ private [kusto] object KustoTestUtils {
       .option(KustoSinkOptions.KUSTO_SPARK_INGESTION_PROPERTIES_JSON, sparkIngestionProperties.toString)
       .mode(SaveMode.Append)
       .save()
-
    }
 
   def cleanup(kustoConnectionOptions: KustoConnectionOptions,
@@ -145,7 +145,8 @@ private [kusto] object KustoTestUtils {
 
     val tableRows = spark.read
       .kusto(s"https://${kustoConnectionOptions.Cluster}.kusto.windows.net",
-      kustoConnectionOptions.Database, tableName, conf)
+        kustoConnectionOptions.Database, tableName, conf)
+
 
     tableRows.count() == tableRows.intersectAll(expectedRows).count()
 

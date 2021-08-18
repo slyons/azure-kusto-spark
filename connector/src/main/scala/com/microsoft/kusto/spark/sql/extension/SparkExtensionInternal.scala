@@ -6,7 +6,7 @@ import com.microsoft.kusto.spark.datasource.KustoSourceOptions
 import org.apache.spark.sql.streaming.DataStreamWriter
 import org.apache.spark.sql.{DataFrameWriter, _}
 
-object SparkExtension {
+object SparkExtensionInternal {
 
   implicit class DataFrameReaderExtension(df: DataFrameReader) {
 
@@ -15,7 +15,7 @@ object SparkExtension {
         df.option(KustoSourceOptions.KUSTO_CLIENT_REQUEST_PROPERTIES_JSON, cpr.get.toString)
       }
 
-      df.format("com.microsoft.kusto.spark.datasource")
+      df.format("com.microsoft.kusto.spark.datasource.")
         .option(KustoSourceOptions.KUSTO_CLUSTER, kustoCluster)
         .option(KustoSourceOptions.KUSTO_DATABASE, database)
         .option(KustoSourceOptions.KUSTO_QUERY, query)

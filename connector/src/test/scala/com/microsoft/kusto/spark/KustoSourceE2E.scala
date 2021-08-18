@@ -7,9 +7,9 @@ import com.microsoft.azure.kusto.data.ClientFactory
 import com.microsoft.azure.kusto.data.auth.ConnectionStringBuilder
 import com.microsoft.kusto.spark.datasink.{KustoSinkOptions, SinkTableCreationMode}
 import com.microsoft.kusto.spark.datasource.{KustoSourceOptions, ReadMode}
-import com.microsoft.kusto.spark.sql.extension.SparkExtension._
+import com.microsoft.kusto.spark.sql.extension.SparkExtensionInternal._
 import com.microsoft.kusto.spark.utils.CslCommandsGenerator._
-import com.microsoft.kusto.spark.utils.{KustoQueryUtils, KustoDataSourceUtils => KDSU}
+import com.microsoft.kusto.spark.utils.{KustoQueryUtils, KustoTestUtils, KustoDataSourceUtils => KDSU}
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode, SparkSession}
 import org.joda.time.DateTime

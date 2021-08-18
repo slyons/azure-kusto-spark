@@ -11,6 +11,7 @@ import com.microsoft.kusto.spark.datasource.KustoSourceOptions
 import com.microsoft.kusto.spark.utils.{KustoDataSourceUtils => KDSU}
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.apache.spark.sql.types.{StringType, StructType}
+import com.microsoft.kusto.spark.sql.extension.SparkExtensionInternal._
 
 object KustoConnectorDemo {
   def main(args: Array[String]): Unit = {
@@ -113,7 +114,6 @@ object KustoConnectorDemo {
     )
 
     // Simplified syntax flavour
-    import com.microsoft.kusto.spark.sql.extension.SparkExtension._
     val df2 = spark.read.kusto(cluster, database, query = "", conf)
 
     // ELABORATE READ SYNTAX
