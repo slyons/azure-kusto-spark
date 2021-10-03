@@ -15,13 +15,13 @@ import com.microsoft.kusto.spark.common.{KustoCoordinates, KustoDebugOptions}
 import com.microsoft.kusto.spark.datasink.SinkTableCreationMode.SinkTableCreationMode
 import com.microsoft.kusto.spark.datasink.{KustoSinkOptions, SchemaAdjustmentMode, SinkTableCreationMode, WriteOptions}
 import com.microsoft.kusto.spark.datasource.{KustoResponseDeserializer, KustoSchema, KustoSourceOptions, KustoStorageParameters}
+import com.microsoft.kusto.spark.exceptions.{FailedOperationException, TimeoutAwaitingPendingOperationException}
 import com.microsoft.kusto.spark.utils.CslCommandsGenerator._
 import com.microsoft.kusto.spark.utils.{KustoConstants => KCONST}
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SaveMode
 import org.apache.spark.sql.catalyst.util.DateTimeUtils
-
 import com.microsoft.kusto.spark.utils.KustoConstants.{DefaultBatchingLimit, DefaultExtentsCountForSplitMergePerNode, DefaultMaxRetriesOnMoveExtents}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -119,7 +119,8 @@ object KustoDataSourceUtils {
     val alias = getClusterNameFromUrlIfNeeded(cluster.get.toLowerCase())
     val clusterUrl = getEngineUrlFromAliasIfNeeded(cluster.get.toLowerCase())
     val table = parameters.get(KustoSinkOptions.KUSTO_TABLE)
-
+    val requestId: String = parameters.getOrElse(KustoSinkOptions.KUSTO_REQUEST_ID, UUID.randomUUID().toString)
+    val clientRequestProperties = getClientRequestProperties(parameters, requestId)
     // Parse KustoAuthentication
     val applicationId = parameters.getOrElse(KustoSourceOptions.KUSTO_AAD_APP_ID, "")
     val applicationKey = parameters.getOrElse(KustoSourceOptions.KUSTO_AAD_APP_SECRET, "")
@@ -193,12 +194,15 @@ object KustoDataSourceUtils {
       }
     }
 
-    SourceParameters(authentication, KustoCoordinates(clusterUrl, alias, database.get, table), keyVaultAuthentication)
+    SourceParameters(authentication, KustoCoordinates(clusterUrl, alias, database.get, table),
+      keyVaultAuthentication, requestId, clientRequestProperties)
   }
 
   case class SinkParameters(writeOptions: WriteOptions, sourceParametersResults: SourceParameters)
 
-  case class SourceParameters(authenticationParameters: KustoAuthentication, kustoCoordinates: KustoCoordinates, keyVaultAuth: Option[KeyVaultAuthentication])
+  case class SourceParameters(authenticationParameters: KustoAuthentication, kustoCoordinates: KustoCoordinates,
+                              keyVaultAuth: Option[KeyVaultAuthentication], requestId:String,
+                              clientRequestProperties: ClientRequestProperties)
 
   def parseSinkParameters(parameters: Map[String, String], mode: SaveMode = SaveMode.Append): SinkParameters = {
     if (mode != SaveMode.Append) {
@@ -236,9 +240,10 @@ object KustoDataSourceUtils {
       .DefaultWaitingIntervalLongRunning).toInt, TimeUnit.SECONDS)
     val autoCleanupTime = new FiniteDuration(parameters.getOrElse(KustoSinkOptions.KUSTO_STAGING_RESOURCE_AUTO_CLEANUP_TIMEOUT, KCONST
       .DefaultCleaningInterval).toInt, TimeUnit.SECONDS)
-    val requestId = parameters.getOrElse(KustoSinkOptions.KUSTO_REQUEST_ID, UUID.randomUUID().toString)
 
     val ingestionPropertiesAsJson = parameters.get(KustoSinkOptions.KUSTO_SPARK_INGESTION_PROPERTIES_JSON)
+
+    val sourceParameters = parseSourceParameters(parameters)
 
     val writeOptions = WriteOptions(
       tableCreation,
@@ -248,14 +253,12 @@ object KustoDataSourceUtils {
       timeout,
       ingestionPropertiesAsJson,
       batchLimit,
-      requestId,
+      sourceParameters.requestId,
       autoCleanupTime,
       minimalExtentsCountForSplitMergePerNode,
       maxRetriesOnMoveExtents,
       adjustSchema
     )
-
-    val sourceParameters = parseSourceParameters(parameters)
 
     if (sourceParameters.kustoCoordinates.table.isEmpty) {
       throw new InvalidParameterException("KUSTO_TABLE parameter is missing. Must provide a destination table name")
@@ -263,20 +266,23 @@ object KustoDataSourceUtils {
 
     logInfo("parseSinkParameters", s"Parsed write options for sink: {'timeout': ${writeOptions.timeout}, 'async': ${writeOptions.isAsync}, " +
       s"'tableCreationMode': ${writeOptions.tableCreateOptions}, 'writeLimit': ${writeOptions.writeResultLimit}, 'batchLimit': ${writeOptions.batchLimit}" +
-      s", 'timeout': ${writeOptions.timeout}, 'timezone': ${writeOptions.timeZone}, 'ingestionProperties': $ingestionPropertiesAsJson, requestId: $requestId}")
+      s", 'timeout': ${writeOptions.timeout}, 'timezone': ${writeOptions.timeZone}, " +
+      s"'ingestionProperties': $ingestionPropertiesAsJson, requestId: ${sourceParameters.requestId}}")
 
     SinkParameters(writeOptions, sourceParameters)
   }
 
-  def getClientRequestProperties(parameters: Map[String, String]): ClientRequestProperties = {
+  def getClientRequestProperties(parameters: Map[String, String], requestId: String): ClientRequestProperties = {
     val crpOption = parameters.get(KustoSourceOptions.KUSTO_CLIENT_REQUEST_PROPERTIES_JSON)
 
-    if (crpOption.isDefined) {
-      val crp = ClientRequestProperties.fromString(crpOption.get)
-      crp
+    val crp = if (crpOption.isDefined) {
+      ClientRequestProperties.fromString(crpOption.get)
     } else {
       new ClientRequestProperties
     }
+
+    crp.setClientRequestId(requestId)
+    crp
   }
 
   private[kusto] def reportExceptionAndThrow(
@@ -395,9 +401,9 @@ object KustoDataSourceUtils {
   def verifyAsyncCommandCompletion(client: Client,
                                    database: String,
                                    commandResult: KustoResultSetTable,
-                                   directory: String,
                                    samplePeriod: FiniteDuration = KCONST.DefaultPeriodicSamplePeriod,
-                                   timeOut: FiniteDuration): Unit = {
+                                   timeOut: FiniteDuration,
+                                   doingWhat: String): Option[KustoResultSetTable] = {
     commandResult.next()
     val operationId = commandResult.getString(0)
     val operationsShowCommand = CslCommandsGenerator.generateOperationsShowCommand(operationId)
@@ -414,11 +420,9 @@ object KustoDataSourceUtils {
       }
       catch {
         case e: DataServiceException => {
-          val error = new JSONObject(e.getCause.getMessage).getJSONObject("error")
-          val isPermanent = error.getBoolean("@permanent")
-          if (isPermanent) {
-            val message = s"Couldn't monitor the progress of the export command from the service, you may track it using " +
-              s"the command '$operationsShowCommand' and read from the blob directory: ('$directory'), once it completes."
+          if (e.isPermanent) {
+            val message = s"Couldn't monitor the progress of the $doingWhat operation from the service, you may track" +
+              s" it using the command '$operationsShowCommand'."
             logError("verifyAsyncCommandCompletion", message)
             throw new Exception(message, e)
           }
@@ -449,15 +453,18 @@ object KustoDataSourceUtils {
     }
 
     if (lastResponse.isEmpty || lastResponse.get.getString(stateCol) != "Completed") {
-      throw new RuntimeException(
+      throw new FailedOperationException(
         s"Failed to execute Kusto operation with OperationId '$operationId', State: '${lastResponse.get.getString(stateCol)}'," +
-          s" Status: '${lastResponse.get.getString(statusCol)}'"
+          s" Status: '${lastResponse.get.getString(statusCol)}'",
+        lastResponse
       )
     }
 
     if (!success) {
-      throw new RuntimeException(s"Timed out while waiting for operation with OperationId '$operationId'")
+      throw new TimeoutAwaitingPendingOperationException(s"Timed out while waiting for operation with OperationId '$operationId'")
     }
+
+    lastResponse
   }
 
   private[kusto] def parseSas(url: String): KustoStorageParameters = {

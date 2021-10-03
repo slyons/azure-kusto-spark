@@ -28,7 +28,6 @@ import org.json.JSONObject
 import scala.collection.Iterator
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.{Await, Future, TimeoutException}
 
 object KustoWriter {
@@ -42,7 +41,8 @@ object KustoWriter {
                            data: DataFrame,
                            tableCoordinates: KustoCoordinates,
                            authentication: KustoAuthentication,
-                           writeOptions: WriteOptions): Unit = {
+                           writeOptions: WriteOptions,
+                           crp: ClientRequestProperties): Unit = {
     val batchIdIfExists = batchId.map(b => s",batch: ${b.toString}").getOrElse("")
     val kustoClient = KustoClientCache.getClient(tableCoordinates.clusterAlias, tableCoordinates.clusterUrl, authentication)
 
@@ -51,16 +51,14 @@ object KustoWriter {
         tableCoordinates.clusterUrl, tableCoordinates.database)
     }
 
-    val crp = new ClientRequestProperties
-    crp.setClientRequestId(writeOptions.requestId)
-
     val table = tableCoordinates.table.get
     val tmpTableName: String = KustoQueryUtils.simplifyName(TempIngestionTablePrefix +
       data.sparkSession.sparkContext.appName +
       "_" + table + batchId.map(b => s"_${b.toString}").getOrElse("") + "_" + writeOptions.requestId)
 
     val stagingTableIngestionProperties = getSparkIngestionProperties(writeOptions)
-    val schemaShowCommandResult = kustoClient.engineClient.execute(tableCoordinates.database, generateTableGetSchemaAsRowsCommand(tableCoordinates.table.get), crp).getPrimaryResults
+    val schemaShowCommandResult = kustoClient.engineClient.execute(tableCoordinates.database,
+      generateTableGetSchemaAsRowsCommand(tableCoordinates.table.get), crp).getPrimaryResults
     val targetSchema = schemaShowCommandResult.getData.asScala.map(c => c.get(0).asInstanceOf[JSONObject]).toArray
     KustoIngestionUtils.adjustSchema(writeOptions.adjustSchema, data.schema, targetSchema, stagingTableIngestionProperties)
 
@@ -88,7 +86,7 @@ object KustoWriter {
       // KustoWriter will create a temporary table ingesting the data to it.
       // Only if all executors succeeded the table will be appended to the original destination table.
       kustoClient.initializeTablesBySchema(tableCoordinates, tmpTableName, data
-        .schema, targetSchema, writeOptions, crp)
+        .schema, targetSchema, writeOptions, crp, stagingTableIngestionProperties.creationTime == null)
       KDSU.logInfo(myName, s"Successfully created temporary table $tmpTableName, will be deleted after completing the operation")
 
       kustoClient.setMappingOnStagingTableIfNeeded(stagingTableIngestionProperties, tableCoordinates.database, tmpTableName, table, crp)
