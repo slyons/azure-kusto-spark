@@ -6,7 +6,7 @@ import com.microsoft.azure.kusto.data.ClientFactory
 import com.microsoft.azure.kusto.data.auth.ConnectionStringBuilder
 import com.microsoft.kusto.spark.datasink.{KustoSinkOptions, SinkTableCreationMode}
 import com.microsoft.kusto.spark.sql.extension.SparkExtensionInternal._
-import com.microsoft.kusto.spark.utils.{KustoQueryUtils, KustoTestUtils}
+import com.microsoft.kusto.spark.utils.KustoQueryUtils
 import org.apache.spark.sql.SparkSession
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec

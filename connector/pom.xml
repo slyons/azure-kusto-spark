@@ -11,6 +11,25 @@
         <!--suppress MavenPropertyInParent -->
         <version>${revision}</version>
     </parent>
+    <repositories>
+        <repository>
+            <id>Azure-Kusto-Service</id>
+            <url>https://msazure.pkgs.visualstudio.com/One/_packaging/Azure-Kusto-Service/maven/v1</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>Azure-Kusto-Service</id>
+            <url>https://msazure.pkgs.visualstudio.com/One/_packaging/Azure-Kusto-Service/maven/v1</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <!-- Compile Scope -->

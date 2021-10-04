@@ -15,7 +15,7 @@ object SparkExtensionInternal {
         df.option(KustoSourceOptions.KUSTO_CLIENT_REQUEST_PROPERTIES_JSON, cpr.get.toString)
       }
 
-      df.format("com.microsoft.kusto.spark.datasource.")
+      df.format("com.microsoft.kusto.spark.datasource.DefaultSourceInternal")
         .option(KustoSourceOptions.KUSTO_CLUSTER, kustoCluster)
         .option(KustoSourceOptions.KUSTO_DATABASE, database)
         .option(KustoSourceOptions.KUSTO_QUERY, query)
@@ -30,7 +30,7 @@ object SparkExtensionInternal {
         df.option(KustoSinkOptions.KUSTO_SPARK_INGESTION_PROPERTIES_JSON, sparkIngestionProperties.get.toString)
       }
 
-      df.format("com.microsoft.kusto.spark.datasource")
+      df.format("com.microsoft.kusto.spark.datasource.DefaultSourceInternal")
       .option(KustoSinkOptions.KUSTO_CLUSTER, kustoCluster)
       .option(KustoSinkOptions.KUSTO_DATABASE, database)
       .option(KustoSinkOptions.KUSTO_TABLE, table)

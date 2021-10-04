@@ -1,4 +1,4 @@
-package com.microsoft.kusto.spark.utils
+package com.microsoft.kusto.spark
 
 import java.security.InvalidParameterException
 import java.util.UUID
@@ -7,9 +7,9 @@ import com.microsoft.azure.kusto.data.auth.ConnectionStringBuilder
 import com.microsoft.azure.kusto.data.{Client, ClientFactory}
 import com.microsoft.kusto.spark.datasink.{KustoSinkOptions, SparkIngestionProperties}
 import com.microsoft.kusto.spark.datasource.KustoSourceOptions
-import com.microsoft.kusto.spark.utils.CslCommandsGenerator._
 import com.microsoft.kusto.spark.sql.extension.SparkExtensionInternal._
-import com.microsoft.kusto.spark.utils.{KustoDataSourceUtils => KDSU}
+import com.microsoft.kusto.spark.utils.CslCommandsGenerator._
+import com.microsoft.kusto.spark.utils.{KustoQueryUtils, KustoDataSourceUtils => KDSU}
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 
 import scala.collection.JavaConverters._
