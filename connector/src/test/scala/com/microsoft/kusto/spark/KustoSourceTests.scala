@@ -54,7 +54,7 @@ class KustoSourceTests extends FlatSpec with MockFactory with Matchers with Befo
 
     val df = spark.sqlContext
       .read
-      .format("com.microsoft.kusto.spark.datasource")
+      .format("com.microsoft.kusto.spark.datasource.DefaultSourceInternal")
       .option(KustoSourceOptions.KUSTO_CLUSTER, cluster)
       .option(KustoSourceOptions.KUSTO_DATABASE, database)
       .option(KustoSourceOptions.KUSTO_QUERY, query)
